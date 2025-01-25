@@ -1,15 +1,20 @@
 import pygame
 from player import *
-
-screen = pygame.display.set_mode((1280, 720))
+screen_width = 1280
+screen_height = 720
+screen = pygame.display.set_mode((screen_width,screen_height))
 def main():
+    clock =pygame.time.Clock()
+    dt = 0
+    player = Player(100, 100, 50,50)
+
+
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-        clock =pygame.time.Clock()
-        dt = 0
-        player = Player(50, 50)
+       
+        player .update(dt)
         screen.fill("grey")
         player.draw(screen)
         pygame.display.flip()
