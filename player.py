@@ -1,24 +1,24 @@
 import pygame
 from constants import *
+from falling_platform import *
+from gameobject import*
 
 
-class Player(pygame.sprite.Sprite):
-    def __init__(self, x,y,width , height):
-        if hasattr(self, "containers"):
-            super().__init__(self.containers)
-        else:
-            super().__init__()
-        self.x = x
-        self.y = y
-        self.height = height
-        self.width = width
+class Player(GameObject):
+    def __init__(self, x,y):
+        super().__init__(x,y)
+        self.height = player_height
+        self.width = player_width
         self.color = "crimson"
         self.can_jump = True
         self.jumping = False   
         self.jump_time = 0
-    
+        self.on_platform = False
+        self.move_speed = player_move_speed     
         self.rotation = 0
-        self.position = pygame.Vector2(x, y)
+
+        self.velocity = 0
+        
 
     
     def draw(self,screen):
@@ -31,13 +31,14 @@ class Player(pygame.sprite.Sprite):
         self.rotation += 200 * dt
         print(self.rotation)
 
-        
+
+    
        
-    def move_y(self, dt):
+  #  def move_y(self, dt):
         #self.position += pygame.Vector2(self.x, self.y - dt)
         
-            self.y += 500 * dt
-            self.color = "blue"
+          #  self.y += self.move_speed * dt
+            
 
     def jump(self,dt):
         #self.position += pygame.Vector2(self.x, self.y - dt)
@@ -45,7 +46,10 @@ class Player(pygame.sprite.Sprite):
            # jump = (dt) * jump_height
           #  self.move_y(-jump)
           #  self.can_jump = False
-          self.jump_time = 0.3
+          print("jump")
+          self.jump_time = 0.5
+          self.can_jump = False
+        
             
         
                            
@@ -53,30 +57,38 @@ class Player(pygame.sprite.Sprite):
     def move_x(self, dt):
         #self.position += pygame.Vector2(self.x, self.y - dt)
         
-        self.x += 500 * dt
+        self.x += self.move_speed  * dt
         self.color = "crimson"
+    
+    def fall(self, dt, speed):      
+        self.y += speed  * dt
         
-    def fall(self, dt):      
-        self.y += 500 * dt
+
+    def collide(self, Falling_platform):
         
-        
+        if self.x + self.height == Falling_platform.x:
+            return True
+        return False
     
     def update(self, dt):
         self.jump_time -= dt
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a]:
-            if self.x >0:
-                self.move_x(-dt)
+            self.move_x(-dt)
+            if self.x <=0:
+                self.x = 0
         if keys[pygame.K_d]:
-            if self.x < self.s_width - self.width:
-                self.move_x(dt)
+            self.move_x(dt)
+            if self.x >= self.s_width - self.width:
+                self.x = self.s_width - self.width
         if self.y <= screen_height - self.height and self.jump_time <=0:
-            self.fall(dt)
-        if  self.jump_time > 0:
-            self.fall(-dt)
+            self.fall(dt, player_gravity)
+        if self.jump_time>0:
+            self.fall(-dt,player_jump_height)
         if self.y >= screen_height - self.height:
+            self.y = screen_height - self.height
             self.can_jump = True
-        print(self.can_jump)
+        
     
 
 

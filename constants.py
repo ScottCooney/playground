@@ -8,3 +8,8 @@ screen_height = 720
 
 
 jump_height = 20
+player_height = 50
+player_width = 50
+player_move_speed = 500
+player_gravity = 1000
+player_jump_height = 300

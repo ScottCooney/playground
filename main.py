@@ -15,8 +15,10 @@ def main():
     Falling_platform.containers = (updatable, drawable)
     clock =pygame.time.Clock()
     dt = 0
-    player = Player(100, 100, 50,50)
-    platform = Falling_platform(300,300)
+    player = Player(100, 100)
+    platform = Falling_platform(300,700)
+    pygame.font.init()
+    font = pygame.font.SysFont('Arial', 24)
 
     while True:
         for event in pygame.event.get():
@@ -25,7 +27,8 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_w:
                     player.jump(dt)
-                player.can_jump == False
+                   
+                    
                     
        
         for obj in updatable:
@@ -35,9 +38,18 @@ def main():
         screen.fill("grey")
 
         
+        if player.collide(platform) == True:
+            player.on_platform = True
+            print("ont plat")
+        
         for obj in drawable:
             obj.draw(screen)
         
+        coordinates_text = f"X: {player.x}, Y: {player.y}"
+        text_surface = font.render(coordinates_text, True, (0, 0, 0))
+        screen.blit(text_surface, (10, 10))
+
+
         pygame.display.flip()
         dt = clock.tick(60) / 1000
 
